@@ -13,19 +13,19 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-gray-100 font-sans antialiased h-screen overflow-hidden">
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-full w-full">
         
-        <!-- BAGIAN KIRI: DAFTAR MENU -->
+        <!-- BAGIAN KIRI: DAFTAR MENU (Bisa di-scroll sendiri) -->
         <div class="flex-1 flex flex-col h-full p-4 overflow-y-auto">
-            <header class="mb-4">
+            <header class="mb-4 flex-shrink-0">
                 <h1 class="text-2xl font-bold text-gray-800">Kasir Warung</h1>
                 <p class="text-sm text-gray-500">Sentuh menu untuk menambahkan ke keranjang</p>
             </header>
 
             <!-- Kategori Filter -->
-            <div id="category-filters" class="flex gap-2 mb-4 overflow-x-auto pb-2">
+            <div id="category-filters" class="flex gap-2 mb-4 overflow-x-auto pb-2 flex-shrink-0">
                 <button onclick="filterMenu('Semua')" class="cat-btn px-4 py-2 bg-gray-800 text-white font-medium rounded-lg shadow-sm transition active:scale-95 whitespace-nowrap">Semua</button>
                 <button onclick="filterMenu('Hotdog')" class="cat-btn px-4 py-2 bg-orange-600 text-white font-medium rounded-lg shadow-sm transition active:scale-95 whitespace-nowrap">Hotdog</button>
                 <button onclick="filterMenu('Burger')" class="cat-btn px-4 py-2 bg-amber-600 text-white font-medium rounded-lg shadow-sm transition active:scale-95 whitespace-nowrap">Burger</button>
@@ -39,55 +39,58 @@
             </div>
         </div>
 
-        <!-- BAGIAN KANAN: DETAIL PESANAN / KERANJANG -->
-        <div class="w-full md:w-96 bg-white border-l border-gray-200 flex flex-col h-full shadow-lg">
-            <div class="p-4 border-b border-gray-200">
-                <h2 class="text-lg font-bold text-gray-800">Detail Pesanan</h2>
-                <div class="mt-2">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Pelanggan:</label>
-                    <input type="text" id="customer-name" placeholder="Contoh: Kak Budi" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <!-- BAGIAN KANAN: DETAIL PESANAN / KERANJANG (Tinggi pas, tidak meluber) -->
+        <div class="w-full md:w-96 bg-white border-l border-gray-200 flex flex-col h-full shadow-lg flex-shrink-0">
+            <!-- Header & Input Nama -->
+            <div class="p-3 border-b border-gray-200 flex-shrink-0">
+                <h2 class="text-base font-bold text-gray-800">Detail Pesanan</h2>
+                <div class="mt-1">
+                    <label class="block text-[11px] font-semibold text-gray-600 mb-0.5">Nama Pelanggan:</label>
+                    <input type="text" id="customer-name" placeholder="Contoh: Kak Budi" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
 
-            <!-- List Item Keranjang -->
-            <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-gray-100">
-                <p class="text-gray-400 text-center py-8 text-sm">Keranjang masih kosong</p>
+            <!-- List Item Keranjang (Area yang bisa di-scroll jika item banyak) -->
+            <div id="cart-items" class="flex-1 overflow-y-auto p-3 space-y-2 divide-y divide-gray-100">
+                <p class="text-gray-400 text-center py-8 text-xs">Keranjang masih kosong</p>
             </div>
 
-            <!-- Footer Keranjang & Checkout -->
-            <div class="p-4 border-t border-gray-200 bg-gray-50 space-y-2">
-                <div class="flex justify-between items-center text-sm text-gray-600">
+            <!-- Footer Ringkasan, Input Tunai & Tombol Proses (Diam di bawah, tidak ikut terdorong) -->
+            <div class="p-3 border-t border-gray-200 bg-gray-50 flex-shrink-0 space-y-1.5">
+                <div class="flex justify-between items-center text-xs text-gray-600">
                     <span>Subtotal:</span>
                     <span id="cart-subtotal">Rp 0</span>
                 </div>
-                <div class="flex justify-between items-center text-sm text-gray-600">
+                <div class="flex justify-between items-center text-xs text-gray-600">
                     <span>Pajak (15%):</span>
                     <span id="cart-tax">Rp 0</span>
                 </div>
-                <div class="flex justify-between items-center mb-2 pt-1 border-t border-gray-200">
-                    <span class="text-base font-semibold text-gray-800">Total Akhir:</span>
-                    <span id="cart-total" class="text-xl font-bold text-green-600">Rp 0</span>
+                <div class="flex justify-between items-center pt-1 border-t border-gray-200">
+                    <span class="text-sm font-semibold text-gray-800">Total Akhir:</span>
+                    <span id="cart-total" class="text-lg font-bold text-green-600">Rp 0</span>
                 </div>
                 
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Metode Bayar:</label>
-                    <select id="payment-method" onchange="toggleCashInput()" class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="Tunai">Tunai</option>
-                        <option value="QRIS">QRIS</option>
-                    </select>
-                </div>
-
-                <!-- Input Uang Tunai (Hanya muncul jika metode Tunai) -->
-                <div id="cash-input-container">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Uang Diterima (Tunai):</label>
-                    <input type="number" id="cash-given" placeholder="Masukkan jumlah uang" oninput="calculateChange()" class="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <div class="flex justify-between items-center mt-1 text-xs">
-                        <span class="text-gray-500 font-medium">Kembalian:</span>
-                        <span id="change-amount" class="font-bold text-blue-600">Rp 0</span>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <div>
+                        <label class="block text-[10px] font-semibold text-gray-600 mb-0.5">Metode Bayar:</label>
+                        <select id="payment-method" onchange="toggleCashInput()" class="w-full px-2 py-1 border rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Tunai">Tunai</option>
+                            <option value="QRIS">QRIS</option>
+                        </select>
+                    </div>
+                    <div id="cash-input-container">
+                        <label class="block text-[10px] font-semibold text-gray-600 mb-0.5">Uang Diterima:</label>
+                        <input type="number" id="cash-given" placeholder="Jumlah uang" oninput="calculateChange()" class="w-full px-2 py-1 border rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
 
-                <button onclick="checkout()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow transition active:scale-98 text-base mt-2">
+                <!-- Info Kembalian -->
+                <div id="change-info-container" class="flex justify-between items-center text-xs pt-0.5">
+                    <span class="text-gray-500 font-medium">Kembalian:</span>
+                    <span id="change-amount" class="font-bold text-blue-600">Rp 0</span>
+                </div>
+
+                <button onclick="checkout()" class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow transition active:scale-98 text-sm mt-1">
                     PROSES & SIMPAN
                 </button>
             </div>
@@ -201,7 +204,7 @@
             const totalEl = document.getElementById('cart-total');
             
             if (cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center py-8 text-sm">Keranjang masih kosong</p>';
+                container.innerHTML = '<p class="text-gray-400 text-center py-8 text-xs">Keranjang masih kosong</p>';
                 subtotalEl.innerText = 'Rp 0';
                 taxEl.innerText = 'Rp 0';
                 totalEl.innerText = 'Rp 0';
@@ -215,16 +218,16 @@
             cart.forEach(item => {
                 subtotal += item.harga * item.qty;
                 const div = document.createElement('div');
-                div.className = 'py-2 flex justify-between items-center text-sm';
+                div.className = 'py-1.5 flex justify-between items-center text-xs';
                 div.innerHTML = `
                     <div class="flex-1 pr-2">
                         <div class="font-semibold text-gray-800">${item.nama}</div>
-                        <div class="text-xs text-gray-500">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</div>
+                        <div class="text-[11px] text-gray-500">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="updateQty('${item.nama}', -1)" class="w-7 h-7 bg-red-100 text-red-600 rounded-lg font-bold flex items-center justify-center active:scale-95">-</button>
-                        <span class="font-bold w-5 text-center">${item.qty}</span>
-                        <button onclick="updateQty('${item.nama}', 1)" class="w-7 h-7 bg-green-100 text-green-600 rounded-lg font-bold flex items-center justify-center active:scale-95">+</button>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="updateQty('${item.nama}', -1)" class="w-6 h-6 bg-red-100 text-red-600 rounded-md font-bold flex items-center justify-center active:scale-95">-</button>
+                        <span class="font-bold w-4 text-center">${item.qty}</span>
+                        <button onclick="updateQty('${item.nama}', 1)" class="w-6 h-6 bg-green-100 text-green-600 rounded-md font-bold flex items-center justify-center active:scale-95">+</button>
                     </div>
                 `;
                 container.appendChild(div);
@@ -243,10 +246,14 @@
         function toggleCashInput() {
             const method = document.getElementById('payment-method').value;
             const cashContainer = document.getElementById('cash-input-container');
+            const changeInfoContainer = document.getElementById('change-info-container');
+            
             if (method === 'Tunai') {
                 cashContainer.style.display = 'block';
+                changeInfoContainer.style.display = 'flex';
             } else {
                 cashContainer.style.display = 'none';
+                changeInfoContainer.style.display = 'none';
             }
         }
 
