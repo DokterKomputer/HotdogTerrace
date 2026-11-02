@@ -4,27 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasir Warung - POS Touchscreen</title>
-    <!-- Tailwind CSS untuk styling modern dan responsif -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Efek sentuh yang nyaman */
-        button {
-            touch-action: manipulation;
-        }
+        button { touch-action: manipulation; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans antialiased h-screen overflow-hidden">
 
     <div class="flex h-full w-full">
-        
-        <!-- BAGIAN KIRI: DAFTAR MENU (Bisa di-scroll sendiri) -->
+        <!-- BAGIAN KIRI: DAFTAR MENU -->
         <div class="flex-1 flex flex-col h-full p-4 overflow-y-auto">
             <header class="mb-4 flex-shrink-0">
                 <h1 class="text-2xl font-bold text-gray-800">Kasir Warung</h1>
                 <p class="text-sm text-gray-500">Sentuh menu untuk menambahkan ke keranjang</p>
             </header>
 
-            <!-- Kategori Filter -->
             <div id="category-filters" class="flex gap-2 mb-4 overflow-x-auto pb-2 flex-shrink-0">
                 <button onclick="filterMenu('Semua')" class="cat-btn px-4 py-2 bg-gray-800 text-white font-medium rounded-lg shadow-sm transition active:scale-95 whitespace-nowrap">Semua</button>
                 <button onclick="filterMenu('Hotdog')" class="cat-btn px-4 py-2 bg-orange-600 text-white font-medium rounded-lg shadow-sm transition active:scale-95 whitespace-nowrap">Hotdog</button>
@@ -32,16 +26,13 @@
                 <button onclick="filterMenu('Drinks')" class="cat-btn px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-sm transition active:scale-95 whitespace-nowrap">Drinks</button>
             </div>
 
-            <!-- Grid Menu Produk -->
             <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3 pb-10">
-                <!-- Data menu akan dimuat otomatis via JavaScript -->
                 <div class="col-span-full text-center py-10 text-gray-400">Memuat menu dari Google Sheets...</div>
             </div>
         </div>
 
-        <!-- BAGIAN KANAN: DETAIL PESANAN / KERANJANG (Tinggi pas, tidak meluber) -->
+        <!-- BAGIAN KANAN: DETAIL PESANAN -->
         <div class="w-full md:w-96 bg-white border-l border-gray-200 flex flex-col h-full shadow-lg flex-shrink-0">
-            <!-- Header & Input Nama -->
             <div class="p-3 border-b border-gray-200 flex-shrink-0">
                 <h2 class="text-base font-bold text-gray-800">Detail Pesanan</h2>
                 <div class="mt-1">
@@ -50,12 +41,10 @@
                 </div>
             </div>
 
-            <!-- List Item Keranjang (Area yang bisa di-scroll jika item banyak) -->
             <div id="cart-items" class="flex-1 overflow-y-auto p-3 space-y-2 divide-y divide-gray-100">
                 <p class="text-gray-400 text-center py-8 text-xs">Keranjang masih kosong</p>
             </div>
 
-            <!-- Footer Ringkasan, Input Tunai & Tombol Proses (Diam di bawah, tidak ikut terdorong) -->
             <div class="p-3 border-t border-gray-200 bg-gray-50 flex-shrink-0 space-y-1.5">
                 <div class="flex justify-between items-center text-xs text-gray-600">
                     <span>Subtotal:</span>
@@ -84,7 +73,6 @@
                     </div>
                 </div>
 
-                <!-- Info Kembalian -->
                 <div id="change-info-container" class="flex justify-between items-center text-xs pt-0.5">
                     <span class="text-gray-500 font-medium">Kembalian:</span>
                     <span id="change-amount" class="font-bold text-blue-600">Rp 0</span>
@@ -95,10 +83,9 @@
                 </button>
             </div>
         </div>
-
     </div>
 
-    <!-- MODAL STRUK (STRUK PELANGGAN & DAPUR) -->
+    <!-- MODAL STRUK -->
     <div id="receipt-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-4 bg-gray-800 text-white flex justify-between items-center">
@@ -106,9 +93,7 @@
                 <button onclick="closeModal()" class="text-gray-300 hover:text-white font-bold text-xl">&times;</button>
             </div>
             
-            <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-gray-50" id="receipt-content">
-                <!-- Isi Struk Dinamis -->
-            </div>
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-gray-50" id="receipt-content"></div>
 
             <div class="p-4 border-t border-gray-200 bg-white flex gap-3">
                 <button onclick="window.print()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm shadow transition">Cetak / Print</button>
@@ -118,14 +103,12 @@
     </div>
 
     <script>
-        // URL API Google Apps Script Kamu
         const API_URL = "https://script.google.com/macros/s/AKfycbzVCejzGRj2sHH_akawKhFwliBLJg5PDf37CGRPLncQKiogKgq7ci98D7jtx41Fshgb/exec";
 
         let menuData = [];
         let cart = [];
         let activeCategory = 'Semua';
 
-        // Ambil Data Menu dari Google Sheets saat halaman dimuat
         window.onload = function() {
             fetch(API_URL + '?action=getMenu')
                 .then(res => res.json())
@@ -239,7 +222,6 @@
             subtotalEl.innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
             taxEl.innerText = 'Rp ' + tax.toLocaleString('id-ID');
             totalEl.innerText = 'Rp ' + total.toLocaleString('id-ID');
-            
             calculateChange();
         }
 
@@ -315,7 +297,6 @@
                 change: change
             };
 
-            // Kirim data ke Google Sheets
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify(orderData)
@@ -340,7 +321,6 @@
 
         function showReceipt(data) {
             const container = document.getElementById('receipt-content');
-            
             let itemsHtmlCustomer = '';
             let itemsHtmlKitchen = '';
 
@@ -349,18 +329,12 @@
                 itemsHtmlKitchen += `<div class="flex justify-between font-bold"><span>> ${i.nama}</span><span>x ${i.qty}</span></div>`;
             });
 
-            let cashInfoHtml = '';
-            if (data.payment === 'Tunai') {
-                cashInfoHtml = `
-                    <div class="flex justify-between text-gray-600"><span>Bayar Tunai</span><span>Rp ${data.cashGiven.toLocaleString('id-ID')}</span></div>
-                    <div class="flex justify-between text-blue-600 font-bold"><span>Kembalian</span><span>Rp ${data.change.toLocaleString('id-ID')}</span></div>
-                `;
-            } else {
-                cashInfoHtml = `<div class="flex justify-between text-gray-500"><span>Metode Bayar</span><span>QRIS (Lunas)</span></div>`;
-            }
+            let cashInfoHtml = data.payment === 'Tunai' 
+                ? `<div class="flex justify-between text-gray-600"><span>Bayar Tunai</span><span>Rp ${data.cashGiven.toLocaleString('id-ID')}</span></div>
+                   <div class="flex justify-between text-blue-600 font-bold"><span>Kembalian</span><span>Rp ${data.change.toLocaleString('id-ID')}</span></div>`
+                : `<div class="flex justify-between text-gray-500"><span>Metode Bayar</span><span>QRIS (Lunas)</span></div>`;
 
             container.innerHTML = `
-                <!-- Struk Pelanggan -->
                 <div class="bg-white p-4 border border-dashed border-gray-300 rounded-xl text-xs font-mono text-gray-800 shadow-sm">
                     <div class="text-center font-bold text-sm mb-1">KASIR WARUNG</div>
                     <div class="text-center text-gray-500 mb-3">Hotdog, Burger & Drinks</div>
@@ -379,7 +353,6 @@
                     <div class="text-center text-gray-400 mt-4">Terima Kasih Atas Kunjungan Anda!</div>
                 </div>
 
-                <!-- Struk Dapur (Kitchen Ticket) -->
                 <div class="bg-amber-50 p-4 border border-amber-300 rounded-xl text-xs font-mono text-gray-900 shadow-sm">
                     <div class="text-center font-bold text-sm mb-1 text-amber-800">*** TIKET DAPUR ***</div>
                     <div class="border-t border-dashed border-amber-300 my-2"></div>
